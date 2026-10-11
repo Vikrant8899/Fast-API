@@ -175,8 +175,14 @@ async def timing_middleware(request: Request, call_next):
 - Each `return response` passes the baton up, not to the client
 
 ```
-Request → logging_middleware → timing_middleware → CORS → your route
-Response ← logging_middleware ← timing_middleware ← CORS ← your route
+# Registration order in middleware.py:
+app.add_middleware(CORSMiddleware)    # registered first
+async def timing_middleware(...)      # registered second
+async def logging_middleware(...)     # registered third ← runs first
+
+# Actual execution order:
+Request  → logging → timing → CORS → your route
+Response ← logging ← timing ← CORS ← your route
 ```
 
 **CORS** — needed so browsers from other domains (frontend apps) can call your API:

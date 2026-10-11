@@ -87,11 +87,20 @@ def list_users(
 Middleware processes requests before they reach your endpoints and responses before they're sent to clients.
 
 **Order of execution:**
-1. Request comes in
-2. Middleware processes request (in order added)
-3. Route handler executes
-4. Middleware processes response (in reverse order)
-5. Response sent to client
+
+Middleware runs in **reverse registration order** — last registered runs first on the way in, first registered runs last on the way out.
+
+```
+Request  → logging → timing → CORS → your route
+Response ← logging ← timing ← CORS ← your route
+```
+
+In our code:
+```python
+app.add_middleware(CORSMiddleware)   # registered first → runs last on request, first on response
+async def timing_middleware(...)     # registered second → runs second
+async def logging_middleware(...)    # registered third  → runs first on request, last on response
+```
 
 **Example use cases:**
 - Request logging
