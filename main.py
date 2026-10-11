@@ -8,6 +8,7 @@ This project demonstrates:
 - CRUD operations
 - Request/Response validation with Pydantic
 """
+# just as comment
 from fastapi import FastAPI, Depends, HTTPException, status
 import sqlite3
 from typing import List
